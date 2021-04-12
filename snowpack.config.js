@@ -3,15 +3,12 @@ module.exports = {
   mount: {
     public: "/",
     fableOut: "/dist",
+
   },
   plugins: [
-    [
-      "@snowpack/plugin-run-script",
-      {
-        cmd: "dotnet fable ./src/App/App.fsproj --outDir ./fableOut",
-        watch: "dotnet fable watch ./src/App/App.fsproj --outDir ./fableOut",
-      },
-    ],
+    "snowpack-plugin-hash",
+    "@snowpack/plugin-postcss",
+    "@jadex/snowpack-plugin-tailwindcss-jit",
   ],
   optimize: {
     bundle: true,

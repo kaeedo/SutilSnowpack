@@ -4,13 +4,19 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "snowpack dev",
-    "build": "snowpack build"
+    "build": "dotnet fable ./src/App/App.fsproj --optimize --configuration Release --noCache --outDir ./fableOut --run cross-env NODE_ENV=production snowpack build",
+    "start": "dotnet fable watch ./src/App/App.fsproj -s --configuration Debug --outDir ./fableOut --runFast cross-env NODE_ENV=development snowpack dev"
   },
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@snowpack/plugin-run-script": "2.3.0",
-    "snowpack": "3.2.2"
+    "@jadex/snowpack-plugin-tailwindcss-jit": "0.2.0",
+    "@snowpack/plugin-postcss": "1.2.2",
+    "autoprefixer": "10.2.5",
+    "cross-env": "7.0.3",
+    "postcss": "8.2.10",
+    "snowpack": "3.2.2",
+    "snowpack-plugin-hash": "0.16.0",
+    "tailwindcss": "2.1.1"
   }
 }
