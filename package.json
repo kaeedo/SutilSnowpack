@@ -1,0 +1,16 @@
+{
+  "name": "sutilfirst",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "snowpack dev",
+    "build": "snowpack build"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@snowpack/plugin-run-script": "2.3.0",
+    "snowpack": "3.2.2"
+  }
+}
