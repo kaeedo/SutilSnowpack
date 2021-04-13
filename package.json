@@ -3,9 +3,16 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
+  "engines": {
+    "node": ">=14",
+    "pnpm": ">=6",
+    "npm": "please-use-pnpm",
+    "yarn": "please-use-pnpm"
+  },
+  "engineStrict": true,
   "scripts": {
-    "build": "dotnet fable ./src/App/App.fsproj --optimize --configuration Release --noCache --outDir ./fableOut --run cross-env NODE_ENV=production snowpack build",
-    "start": "dotnet fable watch ./src/App/App.fsproj -s --configuration Debug --outDir ./fableOut --runFast cross-env NODE_ENV=development snowpack dev"
+    "build": "dotnet fable ./src/App/App.fsproj --configuration Release --noCache --outDir ./fableOut --run cross-env NODE_ENV=production snowpack build",
+    "start": "dotnet fable watch ./src/App/App.fsproj -s --configuration Debug --outDir ./fableOut --run cross-env NODE_ENV=development snowpack dev"
   },
   "author": "",
   "license": "ISC",

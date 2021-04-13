@@ -21,8 +21,8 @@ let view() =
                 ]
             ]
             Html.div [
-                class' "text-xl font-medium text-black"
-                text "Header tsexffftf"
+                class' "absolute text-xl font-medium text-black -top-5 left-1/2 transform translate-x-[-100px] sm:top-5 sm:translate-x-[-10px]"
+                text "Header tsexffftfd"
                 Html.p [
                     class' "text-gray-500"
                     text "wreg kwhertgk jhert"

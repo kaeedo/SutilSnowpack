@@ -3,7 +3,6 @@ module.exports = {
   mount: {
     public: "/",
     fableOut: "/dist",
-
   },
   plugins: [
     "snowpack-plugin-hash",
