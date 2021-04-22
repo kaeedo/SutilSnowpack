@@ -1,41 +1,94 @@
 ﻿module App
 
+open GlobalState
+open Types
+
 open Sutil
 open Sutil.DOM
 open Sutil.Attr
 open Feliz
 open type Feliz.length
+open System
+
+let viewPage model dispatch page =
+    let errorMessage = (model |> Store.map getErrorMessage)
+    match page with
+    | Home ->
+        Home.view()
+    | About ->
+        About.view()
+    | Login ->
+        Login.view ("", "") errorMessage (dispatch << LogUserIn) (fun _ -> Home |> SetPage |> dispatch)
+
 
 let view() =
-    Html.div [
+    // model is an IStore<ModeL>
+    // This means we can write to it if we want, but when we're adopting
+    // Elmish, we treat it like an IObservable<Model>
+    let model, dispatch = () |> Store.makeElmish init update ignore
 
-        Html.span [
-            text "Herp Dderp"
-        ]
+    // Projections from model. These will be bound to elements below
+    let page : IObservable<Page> = model |> Store.map getPage |> Store.distinct
+    //let isLoggedIn : IObservable<bool> = model |> Store.map (getUser >> (fun u -> u.IsSome))
+    let loggedInUser: IObservable<LoggedInUser option> = model  |> Store.map getUser
+
+    // Local store to connect hamburger to nav menu. We *could* route this through Elmish
+    let navMenuActive = Store.make false
+    // Local store for spotting media change. Also, could go through Elmish
+    let isMobile = Store.make false
+    let showAside = Store.zip isMobile navMenuActive |> Store.map (fun (m,a) -> not m || a)
+
+    // Listen to browser-sourced events
+    let routerSubscription  = Navigable.listenLocation Router.parseRoute (dispatch << SetPage)
+    //let mediaSubscription = MediaQuery.listenMedia "(max-width: 768px)" (Store.set isMobile)
+
+    fragment [
+        disposeOnUnmount [ model ]
+        unsubscribeOnUnmount [ routerSubscription ]
         Html.div [
-            class' "p-6 max-w-sm mx-auto bg-white rounded-xl shadow-md flex items-center space-x-4"
+            class' "flex flex-row"
             Html.div [
-                class' "flex-shrink-0"
-                Html.span [
-                    text "logo"
+                class' "flex flex-col space-y-5 h-screen mr-10 border-r-2 border-red-700 px-3"
+                Html.div [
+                    Bind.fragment loggedInUser <| fun liu ->
+                        if (liu.IsSome) then
+                            Html.div [
+                                Html.span [
+                                    class' ""
+                                    text liu.Value.Name
+                                ]
+                                Html.span [
+                                    class' ""
+                                    text "Logout"
+                                    onClick (fun _ -> dispatch LogUserOut) [ PreventDefault ]
+                                ]
+                            ]
+                        else
+                            Html.div [
+                                class' ""
+                                text "Login"
+                                onClick (fun _ -> dispatch (SetPage Login)) [ PreventDefault ]
+                            ]
+
+                    Html.hr []
+
+                    Html.div [
+                        Html.a [ class' "item"; Attr.href "#home"; text "Home" ]
+                    ]
+                    Html.div [
+                        Html.a [ class' "item"; Attr.href "#about"; text "About" ]
+                    ]
                 ]
             ]
+
             Html.div [
-                class' "absolute text-xl font-medium text-black -top-5 left-1/2 transform translate-x-[-100px] sm:top-5 sm:translate-x-[-10px]"
-                text "Header tsexffftfd"
-                Html.p [
-                    class' "text-gray-500"
-                    text "wreg kwhertgk jhert"
+                Html.div [
+                    class' ""
+                    Bind.fragment page <| viewPage model dispatch
                 ]
             ]
         ]
-    ]
+    ] //|> withStyle appStyle
 
+// Start the app
 view() |> mountElement "sutil-app"
-
-// style [
-//             Css.fontFamily "Arial, Helvetica, sans-serif"
-//             Css.textAlignCenter
-//             Css.marginTop (px 40)
-//             Css.fontSize (ex 10)
-//         ]
